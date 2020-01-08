@@ -12,18 +12,13 @@ function heuristic(a,b) {
 const cols = 25;
 const rows = 25;
 let grid = new Array(cols);
-
 let openSet = [];
 let closedSet = [];
-
 let start;
 let end;
-
 let w, h;
-
 let current;
-
-let path = [];
+let noSolution = false;
 
 function setup() {
   createCanvas(400, 400);
@@ -51,9 +46,10 @@ function setup() {
 
   start = grid[0][0];
   end = grid[rows-1][cols-1];
+  start.wall = false;
+  end.wall = false;
 
   openSet.push(start);
-
   console.log(grid);
 };
 
@@ -76,8 +72,9 @@ function draw() {
     removeFromArray(openSet, current);
     closedSet.push(current);
 
-    current.neighbors.map(neighbor => {
-      if(!closedSet.includes(neighbor)) {
+    const {neighbors} = current; 
+    neighbors.map(neighbor => {
+      if(!closedSet.includes(neighbor) && !neighbor.wall) {
         let tempG = current.g + 1;
         if(openSet.includes(neighbor)) {
           if(tempG < neighbor.g) {
@@ -93,7 +90,9 @@ function draw() {
       }
     })
   } else {
-    // no solution found
+    console.log('no solution');
+    noSolution = false;
+    noLoop();
   }
 
 
@@ -113,12 +112,15 @@ function draw() {
     spot.show(color(0, 255, 0));
   });
 
+  let path = [];
   //find the path
-  let temp = current;
-  path.push(temp);
-  while(temp.previous) {
+  if(!noSolution) {
+    let temp = current;
     path.push(temp);
-    temp = temp.previous;
+    while(temp.previous) {
+      path.push(temp.previous);
+      temp = temp.previous;
+    }
   }
 
   path.map(spot => {
