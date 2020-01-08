@@ -5,11 +5,12 @@ function removeFromArray(arr, el) {
 }
 
 function heuristic(a,b) {
-  return dist(a.i, a.j, b.i, b.j);
+  return abs(a.i - b.i) + abs(a.j - b.j);
+  // return dist(a.i, a.j, b.i, b.j);
 }
 
-const cols = 5;
-const rows = 5;
+const cols = 25;
+const rows = 25;
 let grid = new Array(cols);
 
 let openSet = [];
@@ -19,6 +20,10 @@ let start;
 let end;
 
 let w, h;
+
+let current;
+
+let path = [];
 
 function setup() {
   createCanvas(400, 400);
@@ -61,7 +66,7 @@ function draw() {
         winner = i;
       }
     });
-    let current = openSet[winner];
+    current = openSet[winner];
 
     if(current === end) {
       noLoop();
@@ -84,6 +89,7 @@ function draw() {
         }
         neighbor.h = heuristic(neighbor, end);
         neighbor.f = neighbor.g + neighbor.h;
+        neighbor.previous = current;
       }
     })
   } else {
@@ -101,9 +107,21 @@ function draw() {
 
   closedSet.map(spot => {
     spot.show(color(255, 0, 0));
-  })
+  });
 
   openSet.map(spot => {
     spot.show(color(0, 255, 0));
-  })
+  });
+
+  //find the path
+  let temp = current;
+  path.push(temp);
+  while(temp.previous) {
+    path.push(temp);
+    temp = temp.previous;
+  }
+
+  path.map(spot => {
+    spot.show(color(0,0,255));
+  });
 };

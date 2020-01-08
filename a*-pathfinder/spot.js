@@ -5,6 +5,7 @@ function Spot(i, j) {
   this.g = 0;
   this.h = 0;
   this.neighbors = [];
+  this.previous = undefined;
 
   this.show = function(color) {
     fill(color);
