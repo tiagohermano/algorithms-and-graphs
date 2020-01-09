@@ -11,10 +11,11 @@ function Spot(i, j) {
   if(random(0,1) < 0.3) this.wall = true;
 
   this.show = function(color) {
-    fill(color);
-    if(this.wall) fill(0);
-    noStroke(0);
-    rect(this.i*w, this.j*h, w-1, h-1);
+    if(this.wall) {
+      fill(0);
+      noStroke(0);
+      ellipse(this.i*w + w/2, this.j*h + h/2, w/2, h/2);
+    }
   }
 
   // Figure out who my neighbors are
@@ -31,6 +32,20 @@ function Spot(i, j) {
     }
     if (j > 0) {
       this.neighbors.push(grid[i][j - 1]);
+    }
+    
+    // Add diagnals neighbors
+    if(i > 0 && j > 0) {
+      this.neighbors.push(grid[i - 1][j - 1]);
+    }
+    if(i > cols-1 && j > 0) {
+      this.neighbors.push(grid[i + 1][j - 1]);
+    }
+    if(i > 0 && j < rows-1) {
+      this.neighbors.push(grid[i - 1][j + 1]);
+    }
+    if(i < cols-1 && j < rows-1) {
+      this.neighbors.push(grid[i + 1][j + 1]);
     }
   };
 }
